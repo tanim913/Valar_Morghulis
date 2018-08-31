@@ -1,0 +1,19 @@
+﻿Build started 8/31/2018 10:19:14 PM.
+     1>Project "G:\Filetask\DMND\DMND\DMND.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt iMain.cpp
+         iMain.cpp
+     1>g:\filetask\dmnd\dmnd\zombies.h(49): warning C4805: '==' : unsafe mix of type 'boolean' and type 'bool' in operation
+     1>g:\filetask\dmnd\dmnd\imain.cpp(280): warning C4805: '==' : unsafe mix of type 'boolean' and type 'bool' in operation
+     1>g:\filetask\dmnd\dmnd\imain.cpp(282): warning C4805: '==' : unsafe mix of type 'boolean' and type 'bool' in operation
+     1>g:\filetask\dmnd\dmnd\imain.cpp(284): warning C4805: '==' : unsafe mix of type 'boolean' and type 'bool' in operation
+     1>g:\filetask\dmnd\dmnd\imain.cpp(286): warning C4805: '==' : unsafe mix of type 'boolean' and type 'bool' in operation
+     1>g:\filetask\dmnd\dmnd\imain.cpp(288): warning C4805: '==' : unsafe mix of type 'boolean' and type 'bool' in operation
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"G:\Filetask\DMND\Debug\DMND.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"G:\Filetask\DMND\Debug\DMND.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"G:\Filetask\DMND\Debug\DMND.lib" /MACHINE:X86 Debug\iMain.obj
+         DMND.vcxproj -> G:\Filetask\DMND\Debug\DMND.exe
+     1>Done Building Project "G:\Filetask\DMND\DMND\DMND.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.36
