@@ -1,1 +1,1 @@
-# Valar Morghulis
+This is a fun little game using c++. Basically we used "iGtaphics.h" libraries to implement it. To to play this game you need to download the zip and extract it in a directory. You must need visual studio installed in your computer. Open "DMND.sln" with the visual studio. 
