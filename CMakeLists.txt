@@ -19,6 +19,9 @@ if(WIN32)
 endif()
 target_include_directories(all-men-must-die PRIVATE src src/engine third_party)
 
+# Plain libGL only. The default (GLVND) also links libOpenGL, a package the .deb would then have to
+# depend on as well, and a clean Ubuntu does not have it.
+set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)
 target_link_libraries(all-men-must-die PRIVATE OpenGL::GL)
 

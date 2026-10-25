@@ -93,8 +93,9 @@ jobs:
       - name: Every library it needs is found, and the menu entry is installed
         run: |
           # (an "if", not "! ldd | grep": the shell ignores a failing "!" command)
-          if ldd /opt/all-men-must-die/all-men-must-die | grep "not found"; then
-            echo "::error title=missing libraries::ldd found libraries that are not installed"
+          missing=$(ldd /opt/all-men-must-die/all-men-must-die | grep "not found")
+          if [ -n "$missing" ]; then
+            echo "::error title=missing libraries::$(echo "$missing" | sed -z 's/%/%25/g; s/\n/%0A/g')"
             exit 1
           fi
           test -f /usr/share/applications/all-men-must-die.desktop
