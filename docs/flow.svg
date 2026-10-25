@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 230" width="1100" height="230" role="img" aria-labelledby="t d">
+  <title id="t">How a game goes</title>
+  <desc id="d">Level one: catch 15 dragon eggs and dodge poison clouds. Then fight the Night King. Then level two: shoot the zombies. If the dragon's life reaches zero the game is over.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6d98a"/><stop offset="1" stop-color="#b9772a"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#d9a441"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="230" rx="14" fill="#120d0b"/>
+  <g font-family="Georgia, 'Times New Roman', 'DejaVu Serif', serif" text-anchor="middle">
+    <g>
+      <rect x="30" y="40" width="270" height="120" rx="12" fill="#1d1411" stroke="url(#gold)" stroke-width="1.5"/>
+      <text x="165" y="76" font-size="13" letter-spacing="3" fill="#d9a441">LEVEL 1</text>
+      <text x="165" y="106" font-size="22" font-weight="700" fill="#f6e6c4">Catch 15 eggs</text>
+      <text x="165" y="134" font-size="15" fill="#bfae92">Dodge the poison clouds.</text>
+    </g>
+    <g>
+      <rect x="415" y="40" width="270" height="120" rx="12" fill="#1d1411" stroke="url(#gold)" stroke-width="1.5"/>
+      <text x="550" y="76" font-size="13" letter-spacing="3" fill="#d9a441">BOSS</text>
+      <text x="550" y="106" font-size="22" font-weight="700" fill="#f6e6c4">The Night King</text>
+      <text x="550" y="134" font-size="15" fill="#bfae92">Fire back. He shoots blue flame.</text>
+    </g>
+    <g>
+      <rect x="800" y="40" width="270" height="120" rx="12" fill="#1d1411" stroke="url(#gold)" stroke-width="1.5"/>
+      <text x="935" y="76" font-size="13" letter-spacing="3" fill="#d9a441">LEVEL 2</text>
+      <text x="935" y="106" font-size="22" font-weight="700" fill="#f6e6c4">The zombies</text>
+      <text x="935" y="134" font-size="15" fill="#bfae92">Press N. Shoot them down.</text>
+    </g>
+  </g>
+  <g stroke="#d9a441" stroke-width="2" fill="none">
+    <path d="M306 100 H405" marker-end="url(#arrow)"/>
+    <path d="M691 100 H790" marker-end="url(#arrow)"/>
+  </g>
+  <text x="550" y="206" text-anchor="middle" font-family="Georgia, 'Times New Roman', 'DejaVu Serif', serif" font-size="15" fill="#bfae92">Your dragon has 50 life. When it reaches 0, the game is over. Your best score is kept.</text>
+</svg>
