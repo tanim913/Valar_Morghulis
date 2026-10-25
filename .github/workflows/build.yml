@@ -52,7 +52,11 @@ jobs:
         run: |
           export PATH="$PATH:/c/Program Files (x86)/NSIS"
           command -v makensis || { choco install nsis -y --no-progress; export PATH="$PATH:/c/Program Files (x86)/NSIS"; }
-          cpack --config build/CPackConfig.cmake -G NSIS -C Release -B installer
+          if ! cpack --config build/CPackConfig.cmake -G NSIS -C Release -B installer > cpack.log 2>&1; then
+            # job logs are private, so put the reason where it can be read: an error annotation
+            echo "::error title=cpack NSIS failed::$(tail -n 25 cpack.log | tr -d '\r' | sed -z 's/%/%25/g; s/\n/%0A/g')"
+            exit 1
+          fi
           mv installer/all-men-must-die-windows-setup.exe .
 
       - uses: actions/upload-artifact@v4
