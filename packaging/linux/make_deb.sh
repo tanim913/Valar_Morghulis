@@ -24,7 +24,7 @@ Version: $version
 Section: games
 Priority: optional
 Architecture: amd64
-Depends: libc6 (>= 2.35), freeglut3 | libglut3.12, libgl1
+Depends: libc6 (>= 2.31), freeglut3 | libglut3.12, libgl1
 Installed-Size: $(du -sk "$stage" | cut -f1)
 Maintainer: tanim913 <42853370+tanim913@users.noreply.github.com>
 Homepage: https://github.com/tanim913/Valar_Morghulis

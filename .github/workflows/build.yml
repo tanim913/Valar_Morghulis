@@ -12,17 +12,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04 # oldest runner image: the build then runs on 22.04 and newer
+          - os: ubuntu-22.04
             name: linux
+            container: ubuntu:20.04 # built on the oldest supported Ubuntu, so it runs on 20.04 and newer
           - os: windows-latest
             name: windows
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Install the build tools (Linux, inside the Ubuntu 20.04 container)
+        if: matrix.name == 'linux'
+        run: apt-get update && apt-get install -y build-essential cmake git freeglut3-dev dpkg-dev
 
-      - name: Install freeglut (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y freeglut3-dev
+      - uses: actions/checkout@v4
 
       - name: Build
         run: |
@@ -30,7 +32,8 @@ jobs:
           cmake --build build --config Release
 
       - name: Test
-        run: ctest --test-dir build -C Release --output-on-failure
+        # (not --test-dir: Ubuntu 20.04's CMake is older than that)
+        run: cd build && ctest -C Release --output-on-failure
 
       - name: Package
         shell: bash

@@ -41,7 +41,7 @@ Or in a terminal, from the folder you downloaded it to (this also installs the o
 sudo apt install ./all-men-must-die-linux-amd64.deb
 ```
 
-It works on Ubuntu 22.04 or newer, 64-bit. To remove it: `sudo apt remove all-men-must-die`. On an older Ubuntu, build it yourself (below).
+It works on Ubuntu 20.04 or newer, 64-bit. Use `apt install ./file.deb` as above, not `dpkg -i`, because only `apt` fetches the library the game needs. To remove it: `sudo apt remove all-men-must-die`. On an older Ubuntu, build it yourself (below).
 
 ## How it goes
 
