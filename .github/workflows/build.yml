@@ -92,7 +92,11 @@ jobs:
 
       - name: Every library it needs is found, and the menu entry is installed
         run: |
-          ! ldd /opt/all-men-must-die/all-men-must-die | grep "not found"
+          # (an "if", not "! ldd | grep": the shell ignores a failing "!" command)
+          if ldd /opt/all-men-must-die/all-men-must-die | grep "not found"; then
+            echo "::error title=missing libraries::ldd found libraries that are not installed"
+            exit 1
+          fi
           test -f /usr/share/applications/all-men-must-die.desktop
           test -f /usr/share/icons/hicolor/256x256/apps/all-men-must-die.png
           test -x /usr/bin/all-men-must-die
@@ -101,11 +105,15 @@ jobs:
         shell: bash
         run: |
           set +e
-          timeout 10 xvfb-run -a all-men-must-die > run.log 2>&1
+          timeout 10 xvfb-run -a -s "-screen 0 1280x1024x24 +extension GLX +render -noreset" all-men-must-die > run.log 2>&1
           code=$?
           cat run.log
-          # 124 means it was still running when the timeout stopped it
-          [ $code -eq 124 ] && ! grep -q "Cannot load" run.log
+          # 124 means it was still running when the timeout stopped it.
+          # Job logs are private, so a failure is also written out as an error note.
+          if [ $code -ne 124 ] || grep -q "Cannot load" run.log; then
+            echo "::error title=game did not keep running (exit $code)::$(tail -n 25 run.log | tr -d '\r' | sed -z 's/%/%25/g; s/\n/%0A/g')"
+            exit 1
+          fi
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
