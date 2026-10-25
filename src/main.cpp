@@ -9,6 +9,7 @@
 # include "zombies.h"
 #include <iostream>
 #include "score.h"
+# include "hud.h"
 # include <string>
 #include <cstring>
 #include <fstream>
@@ -72,7 +73,7 @@ void objectChange() {
 		boss1Show = true;
 		eggShow1 = false;	eggShow2 = false;	eggShow3 = false;	eggShow4 = false;
 	}
-	if (dragLife <= 0 && show != 1 && show != 4 && show != 5 && show != 6 && dragDieIndex >= 5)
+	if (dragLife <= 0 && show != 1 && show != 4 && show != 5 && show != 6 && show != 10 && dragDieIndex >= 5)
 	{
 		show = 8;//gameOver
 		
@@ -89,6 +90,8 @@ void objectChange() {
 void iDraw()
 {
 	iClear();
+	glPushMatrix();
+	glTranslatef(shakeX, shakeY, 0);
 	iSetColor(0, 0, 0);
 	/*converting integer to String*/
 	snprintf(score, sizeof score, "%d", point);
@@ -96,7 +99,6 @@ void iDraw()
 	snprintf(bossLife, sizeof bossLife, "%d", boss1Life);
 	snprintf(drLife, sizeof drLife, "%d", (int)dragLife);
 
-	insertHighscore();// Inserting the highscore
 	
 	if (show == 0){//openning page
 		iShowImage(0, 0, width, height, start);
@@ -114,11 +116,9 @@ void iDraw()
 		iSetColor(255, 255, 255);
 		
 		
-		snprintf(highScore, sizeof highScore, "%d", sscore);
 		iShowImage(0, 0, width, height, hsw);
+		hudScoreList();
 		iShowImage(10, 450, 40, 40, backbutton);
-		iText(250, 150, "Highest Score is :  ", GLUT_BITMAP_TIMES_ROMAN_24);
-		iText(425, 150, (highScore), GLUT_BITMAP_TIMES_ROMAN_24);
 		iShowImage(mouse_x-25, mouse_y-25, 50, 50, cursor);
 	}
 	if (show == 6){//credits page 
@@ -132,18 +132,17 @@ void iDraw()
 		gamePoints = false;//stops counting points
 		iShowImage(0, 0, width, height, go);
 		iSetColor(255, 255, 255);
-		iText(250, 150, "Your Score is :  ", GLUT_BITMAP_TIMES_ROMAN_24);
-		iText(400, 150, (gameScore), GLUT_BITMAP_TIMES_ROMAN_24);
-		//iText(250, 50, "Press 'q' to return to menu.", GLUT_BITMAP_TIMES_ROMAN_24);
-
+		hudResultLine("Your Score is :", gameScore);
+		hudRankLine();
 	}
+	if (show == 10)//a score for the list: ask for a name
+		hudNameEntry();
 	if (show == 9)//completing level
 	{
 		gamePoints = false;//stops counting points
 		iShowImage(0, -20, width, height+20, flc);
 		iSetColor(255, 255, 255);
-		iText(250, 150, "Your Score is :  ", GLUT_BITMAP_TIMES_ROMAN_24);
-		iText(400, 150, (gameScore), GLUT_BITMAP_TIMES_ROMAN_24);
+		hudResultLine("Your Score is :", gameScore);
 		//iText(250, 50, "Press 'q' to return to menu.", GLUT_BITMAP_TIMES_ROMAN_24);
 		iShowImage(10, 450, 40, 40, backbutton);
 		iShowImage(mouse_x-25, mouse_y-25, 50, 50, cursor);
@@ -219,31 +218,7 @@ void iDraw()
 			boss1shoot1 = false;
 			iShowImage(boss1x, boss1y, boss1wid - 30, boss1height - 30, bossDead[bossDieIndex]);
 		}
-		if (!boss1Show){//scoreboard
-			iSetColor(255,255,255);
-			iText(10, 480, "Collected Eggs:  ", GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(180, 480, (score), GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(10, 380, "Score:  ", GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(100, 380, (gameScore), GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(10, 400, "Dragon Life:  ", GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(150, 400, (drLife), GLUT_BITMAP_TIMES_ROMAN_24);
-		}
-		
-		if (boss1Show){//scoreboard during game 
-			iSetColor(255,255,255);
-			iText(10, 480, "Score:  ", GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(100, 480, (gameScore), GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(10, 380, "Boss Life:  ", GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(190, 380, (bossLife), GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(10, 400, "Dragon Life:  ", GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(190, 400, (drLife), GLUT_BITMAP_TIMES_ROMAN_24);
-			if (boss1y > 550){
-				iSetColor(rand() % 255, rand()%255, 0);
-				iText(240, 235, "NIGHT KING IS COMING!", GLUT_BITMAP_TIMES_ROMAN_24);
-
-			}
-		}
-		
+		drawHud();
 	}
 
 	if (show == 3){// 2nd levels image rendaring
@@ -286,16 +261,12 @@ void iDraw()
 			iShowImage(mcarx, mcary, mCarWid + 30, dragHeight, dragDie[dragDieIndex]);
 			}
 
-		iText(10, 380, "Score:  ", GLUT_BITMAP_TIMES_ROMAN_24);// showing the score on the screen
-		iText(100, 380, (gameScore), GLUT_BITMAP_TIMES_ROMAN_24);
-		if (dragLife > 0)/***********Stop showing the score when the dragon is dead*************/
-		{
-			iText(10, 400, "Dragon Life:  ", GLUT_BITMAP_TIMES_ROMAN_24);
-			iText(150, 400, (drLife), GLUT_BITMAP_TIMES_ROMAN_24);
-		}
 		dragLifebar();
+		drawHud();
 	}
 
+	hudOverlay();
+	glPopMatrix();
 }
 
 
@@ -381,6 +352,12 @@ void iMouse(int button, int state, int mx, int my)
 
 void iKeyboard(unsigned char key)
 {
+	if (show == 10)// typing a name: no shortcuts
+	{
+		if (nameKey(key, gamePoint))
+			show = 8;
+		return;
+	}
 	if (key == 'm')//muting music
 	{
 		audioStop();
@@ -439,42 +416,57 @@ void iKeyboard(unsigned char key)
 		}
 	}
 }
-void iSpecialKeyboard(unsigned char key)
+// dx > 0 moves right, dx < 0 left; the unfired shots ride along with the dragon.
+void moveDragon(int dx)
 {
-
-	if(key==GLUT_KEY_RIGHT)
+	if (dx > 0)
 	{
 		if (mcarx<600)//moving drag
-			mcarx += 10;
+			mcarx += dx;
 		if (shoot1x<600 && shoot1Flag == false)//moving the shoots aswell
-			shoot1x += 10;
+			shoot1x += dx;
 		if (shoot2x<600 && shoot2Flag == false)
-			shoot2x += 10;
+			shoot2x += dx;
 		if (shoot3x<600 && shoot3Flag == false)
-			shoot3x += 10;
+			shoot3x += dx;
 		if (shoot4x<600 && shoot4Flag == false)
-			shoot4x += 10;
+			shoot4x += dx;
 		if (shoot5x<600 && shoot5Flag == false)
-			shoot5x += 10;
+			shoot5x += dx;
 	}
-
-
-	if(key==GLUT_KEY_LEFT)
+	else
 	{
 		if (mcarx>0)
-			mcarx -= 10;//moving drag
+			mcarx += dx;//moving drag
 		if (shoot1x>30 && shoot1Flag == false)// moving the shoots with it
-			shoot1x -= 10;
+			shoot1x += dx;
 		if (shoot2x>30 && shoot2Flag == false)
-			shoot2x -= 10;
+			shoot2x += dx;
 		if (shoot3x>30 && shoot3Flag == false)
-			shoot3x -= 10;
+			shoot3x += dx;
 		if (shoot4x>30 && shoot4Flag == false)
-			shoot4x -= 10;
+			shoot4x += dx;
 		if (shoot5x>30 && shoot5Flag == false)
-			shoot5x -= 10;
+			shoot5x += dx;
 	}
+}
 
+void iSpecialKeyboard(unsigned char key)
+{
+	// moving is done in gameTick, while the key is held
+}
+
+void gameTick()/*steering and the effects, every 16 ms*/
+{
+	bool paused = iAnimPause[0] != 0;
+	if (!paused && (show == 2 || show == 3) && dragLife > 0)
+	{
+		if (iSpecialHeld(GLUT_KEY_RIGHT) || iKeyHeld('d'))
+			moveDragon(5);
+		if (iSpecialHeld(GLUT_KEY_LEFT) || iKeyHeld('a'))
+			moveDragon(-5);
+	}
+	hudTick();
 }
 
 void bgMove1(){
@@ -543,7 +535,7 @@ int main()
 	}
 
 
-	loadHighscore();
+	loadHighscores();
 	iInitialize(width,height, "All Men Must Die");
 
 	iSetTimer(1, objectChange);/*timer for egg movement*/
@@ -553,7 +545,9 @@ int main()
 	iSetTimer(10000, ZombieMoveChange);/*timer for zombie movement*/
 	iSetTimer(80, dragShootZombies);/*timer for dragon shoot of 2nd level*/
 	iSetTimer(800, dragDying); /*Timer for the animation of dragon death*/
+	iSetTimer(16, gameTick); /*steering, sounds and effects*/
 
+	hudInit();
 	tempLife = dragLife;
 	cloud = iLoadImage("cloudt.png");
 	cursor = iLoadImage("cursor.png");

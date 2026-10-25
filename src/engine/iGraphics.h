@@ -16,6 +16,13 @@
 #include "paths.h" // before GL, so Windows headers come in without min/max macros
 #include <GL/glut.h> // freeglut, on Windows and Linux
 
+#ifndef GL_CLAMP_TO_EDGE
+#define GL_CLAMP_TO_EDGE 0x812F
+#endif
+#ifndef GL_GENERATE_MIPMAP
+#define GL_GENERATE_MIPMAP 0x8191
+#endif
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -98,6 +105,7 @@ unsigned int iLoadImage(const char *name)
 
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 	glTexImage2D(GL_TEXTURE_2D,
 		0,
 		GL_RGBA,
@@ -147,17 +155,11 @@ void iShowImage(int x, int y, int width, int height, unsigned int texture)
 	//width = 100;
 	//height = 100;
 	glEnable(GL_TEXTURE_2D);
-
-
-
 	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 	//glPushMatrix();
@@ -165,16 +167,16 @@ void iShowImage(int x, int y, int width, int height, unsigned int texture)
 
 	glBegin(GL_QUADS);
 
-		glTexCoord2f(0, 0);
+		glTexCoord2f(0, 1); // the first row of the file is the top of the picture
 		glVertex2f(x, y);
 
-		glTexCoord2f(1, 0);
+		glTexCoord2f(1, 1);
 		glVertex2f(x + width, y);
 
-		glTexCoord2f(1, -1);
+		glTexCoord2f(1, 0);
 		glVertex2f(x + width, y+height);
 
-		glTexCoord2f(0, -1);
+		glTexCoord2f(0, 0);
 		glVertex2f(x, y + height);
 
 	glEnd();
@@ -461,13 +463,25 @@ void redrawTick(int)
 	glutTimerFunc(I_MIN_TIMER_MS, redrawTick, 0);
 }
 
+// Which keys are down right now (needs glutIgnoreKeyRepeat, set in iInitialize).
+bool iKeyDown[256];
+bool iSpecialDown[256];
+bool iKeyHeld(unsigned char key) { return iKeyDown[key]; }
+bool iSpecialHeld(int key) { return key >= 0 && key < 256 && iSpecialDown[key]; }
+
+void keyUpFF(unsigned char key, int x, int y) { iKeyDown[key] = false; }
+void specialUpFF(int key, int x, int y) { if (key >= 0 && key < 256) iSpecialDown[key] = false; }
+
 void keyboardHandler1FF(unsigned char key, int x, int y)
 {
+	iKeyDown[key] = true;
 	iKeyboard(key);
 	glutPostRedisplay();
 }
 void keyboardHandler2FF(int key, int x, int y)
 {
+	if (key >= 0 && key < 256)
+		iSpecialDown[key] = true;
 	iSpecialKeyboard(key);
 	glutPostRedisplay();
 }
@@ -513,6 +527,8 @@ void iInitialize(int width = 500, int height = 500, const char *title = "iGraphi
 	glutInitWindowSize(width, height);
 	glutInitWindowPosition(10, 10);
 	glutCreateWindow(title);
+	glutSetCursor(GLUT_CURSOR_NONE); // the game draws its own pointer
+	glutIgnoreKeyRepeat(1);          // press and release only, so held keys are exact
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glMatrixMode (GL_PROJECTION);
 	glLoadIdentity();
@@ -531,6 +547,8 @@ void iStart()
 	glutDisplayFunc(displayFF);
 	glutKeyboardFunc(keyboardHandler1FF); //normal
 	glutSpecialFunc(keyboardHandler2FF); //special keys
+	glutKeyboardUpFunc(keyUpFF);
+	glutSpecialUpFunc(specialUpFF);
 	glutMouseFunc(mouseHandlerFF);
 	glutMotionFunc(mouseMoveHandlerFF);
 	glutPassiveMotionFunc(passiveMouseHandlerFF);
@@ -543,5 +561,7 @@ void iStart()
 	//
 	glAlphaFunc(GL_GREATER, 0.0f);
 	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND); // soft sprite edges, flames and smoke blend instead of cutting out
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glutMainLoop();
 }

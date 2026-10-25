@@ -48,3 +48,9 @@ add_custom_command(TARGET all-men-must-die POST_BUILD
 
 install(TARGETS all-men-must-die RUNTIME DESTINATION .)
 install(DIRECTORY assets DESTINATION .)
+
+# Checks for the score list: ctest --test-dir build
+enable_testing()
+add_executable(test_scores tests/test_scores.cpp)
+target_include_directories(test_scores PRIVATE src)
+add_test(NAME scores COMMAND test_scores)

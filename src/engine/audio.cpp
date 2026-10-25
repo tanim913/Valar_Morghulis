@@ -23,7 +23,9 @@ static void audioShutdown()
 	soundReady = engineReady = false;
 }
 
-void audioPlayLoop(const char *name)
+static bool muted = false;
+
+static bool audioInit()
 {
 	if (!engineTried)
 	{
@@ -32,10 +34,16 @@ void audioPlayLoop(const char *name)
 		if (engineReady)
 			atexit(audioShutdown);
 		else
-			fprintf(stderr, "No sound device, playing without music.\n");
+			fprintf(stderr, "No sound device, playing without sound.\n");
 	}
-	if (!engineReady)
+	return engineReady;
+}
+
+void audioPlayLoop(const char *name)
+{
+	if (!audioInit())
 		return;
+	muted = false;
 
 	if (!soundReady)
 	{
@@ -46,14 +54,24 @@ void audioPlayLoop(const char *name)
 			return;
 		}
 		ma_sound_set_looping(&sound, MA_TRUE);
+		ma_sound_set_volume(&sound, 0.55f); // leave room for the effects
 		soundReady = true;
 	}
 	ma_sound_seek_to_pcm_frame(&sound, 0);
 	ma_sound_start(&sound);
 }
 
+void audioPlaySfx(const char *name)
+{
+	if (muted || !audioInit())
+		return;
+	std::string path = assetPath(std::string("audio/") + name);
+	ma_engine_play_sound(&engine, path.c_str(), NULL);
+}
+
 void audioStop()
 {
+	muted = true;
 	if (soundReady)
 		ma_sound_stop(&sound);
 }
