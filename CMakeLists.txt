@@ -25,8 +25,12 @@ set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)
 target_link_libraries(all-men-must-die PRIVATE OpenGL::GL)
 
-if(WIN32)
-  # Windows has no system freeglut: build it once, statically, from source.
+# freeglut: Windows has none, so it is built from source and linked in. The Ubuntu package does the
+# same (cmake -DUSE_BUNDLED_FREEGLUT=ON), because newer Ubuntu names the system library differently
+# (libglut3.12) and one .deb could not depend on both. A plain Ubuntu build uses the system one.
+option(USE_BUNDLED_FREEGLUT "Build freeglut from source and link it into the game" OFF)
+
+if(WIN32 OR USE_BUNDLED_FREEGLUT)
   include(FetchContent)
   set(CMAKE_POLICY_VERSION_MINIMUM 3.5) # freeglut 3.4 predates CMake 4
   set(FREEGLUT_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
@@ -38,6 +42,9 @@ if(WIN32)
   target_include_directories(all-men-must-die PRIVATE ${freeglut_SOURCE_DIR}/include)
   target_link_libraries(all-men-must-die PRIVATE freeglut_static)
   target_compile_definitions(all-men-must-die PRIVATE FREEGLUT_STATIC)
+endif()
+
+if(WIN32)
   # No console window behind the game.
   if(MSVC)
     target_link_options(all-men-must-die PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
@@ -45,10 +52,13 @@ if(WIN32)
     target_link_options(all-men-must-die PRIVATE -Wl,--subsystem,windows)
   endif()
 else()
-  # Ubuntu: sudo apt install freeglut3-dev
-  find_package(GLUT REQUIRED)
+  if(NOT USE_BUNDLED_FREEGLUT)
+    # Ubuntu: sudo apt install freeglut3-dev
+    find_package(GLUT REQUIRED)
+    target_link_libraries(all-men-must-die PRIVATE GLUT::GLUT)
+  endif()
   find_package(Threads REQUIRED)
-  target_link_libraries(all-men-must-die PRIVATE GLUT::GLUT Threads::Threads ${CMAKE_DL_LIBS} m)
+  target_link_libraries(all-men-must-die PRIVATE Threads::Threads ${CMAKE_DL_LIBS} m)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # One less library to install: the C++ runtime travels inside the program.
     target_link_options(all-men-must-die PRIVATE -static-libstdc++ -static-libgcc)

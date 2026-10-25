@@ -11,7 +11,8 @@ chmod 755 "$stage"
 
 install -d "$stage/opt/all-men-must-die" "$stage/usr/bin" "$stage/usr/share/applications" \
            "$stage/usr/share/icons/hicolor/256x256/apps" "$stage/DEBIAN"
-cp -r "$src"/. "$stage/opt/all-men-must-die/"
+cp "$src/all-men-must-die" "$stage/opt/all-men-must-die/"
+cp -r "$src/assets" "$stage/opt/all-men-must-die/"
 find "$stage/opt" -type f -exec chmod 644 {} +
 chmod 755 "$stage/opt/all-men-must-die/all-men-must-die"
 ln -s /opt/all-men-must-die/all-men-must-die "$stage/usr/bin/all-men-must-die"
@@ -24,7 +25,7 @@ Version: $version
 Section: games
 Priority: optional
 Architecture: amd64
-Depends: libc6 (>= 2.31), freeglut3 | libglut3.12, libgl1
+Depends: libc6 (>= 2.31), libgl1, libx11-6, libxi6, libxrandr2, libxxf86vm1
 Installed-Size: $(du -sk "$stage" | cut -f1)
 Maintainer: tanim913 <42853370+tanim913@users.noreply.github.com>
 Homepage: https://github.com/tanim913/Valar_Morghulis
