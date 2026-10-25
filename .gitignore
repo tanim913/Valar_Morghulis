@@ -1,0 +1,19 @@
+# build output
+build/
+out/
+dist/
+*.obj
+*.o
+*.pdb
+*.ilk
+*.idb
+*.tlog
+Debug/
+Release/
+.vs/
+.vscode/
+CMakeUserPresets.json
+
+# the game writes its high score to the player's data folder, never here
+highscore.txt
+SCR.txt
