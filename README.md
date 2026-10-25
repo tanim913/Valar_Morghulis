@@ -35,13 +35,13 @@ To remove it later: Settings, Apps, All Men Must Die, Uninstall.
 2. Double-click it, then click **Install** (it asks for your password).
 3. Press the **Super** key (the Windows key), type *All Men Must Die*, and click the icon.
 
-Or in a terminal, from the folder you downloaded it to (this also installs the one library it needs):
+Or in a terminal, from the folder you downloaded it to (this also installs anything it needs):
 
 ```sh
 sudo apt install ./all-men-must-die-linux-amd64.deb
 ```
 
-It works on Ubuntu 20.04 or newer, 64-bit. Use `apt install ./file.deb` as above, not `dpkg -i`, because only `apt` fetches the library the game needs. To remove it: `sudo apt remove all-men-must-die`. On an older Ubuntu, build it yourself (below).
+It works on Ubuntu 20.04 or newer, 64-bit (the install is tested on 20.04, 22.04 and 24.04 on every release). Use `apt install ./file.deb` as above, not `dpkg -i`, because only `apt` fetches the libraries the game needs. To remove it: `sudo apt remove all-men-must-die`. On an older Ubuntu, build it yourself (below).
 
 ## How it goes
 
