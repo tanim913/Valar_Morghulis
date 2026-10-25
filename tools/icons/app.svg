@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a0809"/>
+      <stop offset="1" stop-color="#1a110d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.17" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#e8742a" stop-opacity="0.42"/>
+      <stop offset="0.55" stop-color="#b8431a" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#b8431a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6d98a"/>
+      <stop offset="0.55" stop-color="#d9a441"/>
+      <stop offset="1" stop-color="#9a6422"/>
+    </linearGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff4dc"/>
+      <stop offset="0.6" stop-color="#f1cf86"/>
+      <stop offset="1" stop-color="#d98a3a"/>
+    </linearGradient>
+    <radialGradient id="egg" cx="0.36" cy="0.3" r="0.85">
+      <stop offset="0" stop-color="#6b2a1f"/>
+      <stop offset="0.45" stop-color="#2a1210"/>
+      <stop offset="1" stop-color="#0d0606"/>
+    </radialGradient>
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff6a1f"/>
+      <stop offset="0.6" stop-color="#ff9a3c"/>
+      <stop offset="1" stop-color="#ffd98a" stop-opacity="0.9"/>
+    </linearGradient>
+    <pattern id="scales" width="22" height="16" patternUnits="userSpaceOnUse" patternTransform="translate(0 2)">
+      <path d="M0 16 A11 11 0 0 1 22 16" fill="none" stroke="#ff9a4a" stroke-opacity="0.34" stroke-width="1.4"/>
+      <path d="M-11 8 A11 11 0 0 1 11 8 M11 8 A11 11 0 0 1 33 8" fill="none" stroke="#ff9a4a" stroke-opacity="0.34" stroke-width="1.4"/>
+    </pattern>
+    <clipPath id="eggClip"><path id="eggShape" d="M200 96 C240 96 266 152 266 198 C266 240 238 264 200 264 C162 264 134 240 134 198 C134 152 160 96 200 96 Z"/></clipPath>
+    <clipPath id="ringClip"><circle cx="200" cy="170" r="104"/></clipPath>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>
+  
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b100c"/><stop offset="1" stop-color="#3a1a0e"/></linearGradient>
+    <radialGradient id="tileglow" cx="0.5" cy="1" r="0.8"><stop offset="0" stop-color="#e8742a" stop-opacity="0.45"/><stop offset="1" stop-color="#e8742a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#tile)"/>
+  <rect width="512" height="512" rx="112" fill="url(#tileglow)"/>
+  <g transform="translate(256 256) scale(1.8) translate(-200 -170)">
+  <circle cx="200" cy="170" r="104" fill="#0d0707" fill-opacity="0.55"/>
+  <g clip-path="url(#ringClip)">
+    <ellipse cx="200" cy="262" rx="92" ry="34" fill="#ff6a1f" opacity="0.55" filter="url(#soft)"/>
+    <path d="M89 282 C89 247 102 239 110 204 C111 235 127 243 127 282 Z" fill="url(#flame)" opacity="0.92"/>
+    <path d="M117 282 C117 232 130 220 138 170 C139 215 155 226 155 282 Z" fill="url(#flame)" opacity="0.8"/>
+    <path d="M147 282 C147 241 160 231 168 190 C169 227 185 236 185 282 Z" fill="url(#flame)" opacity="0.92"/>
+    <path d="M181 282 C181 253 194 247 202 218 C203 244 219 250 219 282 Z" fill="url(#flame)" opacity="0.8"/>
+    <path d="M215 282 C215 241 228 231 236 190 C237 227 253 236 253 282 Z" fill="url(#flame)" opacity="0.92"/>
+    <path d="M245 282 C245 232 258 220 266 170 C267 215 283 226 283 282 Z" fill="url(#flame)" opacity="0.8"/>
+    <path d="M273 282 C273 247 286 239 294 204 C295 235 311 243 311 282 Z" fill="url(#flame)" opacity="0.92"/>
+  </g>
+  <use href="#eggShape" fill="url(#egg)"/>
+  <g clip-path="url(#eggClip)">
+    <rect x="130" y="92" width="140" height="176" fill="url(#scales)"/>
+    <ellipse cx="176" cy="140" rx="22" ry="40" fill="#fff" opacity="0.07" transform="rotate(18 176 140)"/>
+    <rect x="130" y="226" width="140" height="42" fill="#ff7a2a" opacity="0.28"/>
+  </g>
+  <use href="#eggShape" fill="none" stroke="#ff9a4a" stroke-opacity="0.55" stroke-width="1.5"/>
+  <circle cx="200" cy="170" r="104" fill="none" stroke="url(#gold)" stroke-width="3"/>
+  <circle cx="200" cy="170" r="96" fill="none" stroke="url(#gold)" stroke-opacity="0.5" stroke-width="1"/>
+
+  </g>
+</svg>

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=All Men Must Die
+Comment=A dragon-egg arcade game
+Exec=all-men-must-die
+Icon=all-men-must-die
+Terminal=false
+Categories=Game;ArcadeGame;
