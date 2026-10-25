@@ -27,6 +27,16 @@ const int POPUP_TICKS = 50;
 Popup popups[MAX_POPUPS];
 int popupCount = 0;
 
+bool scoreAsked = false; // the name has been asked for (or not needed) in this game
+
+// A game starts from scratch: the score list is asked about again, and stops
+// highlighting where the last score landed.
+void hudNewGame()
+{
+	scoreAsked = false;
+	lastRank = -1;
+}
+
 void hudInit()
 {
 	iFontLoad(fontS, "Cinzel.ttf", 18);
@@ -62,14 +72,9 @@ void hudTick()
 	bool playing = (show == 2 || show == 3) && !paused;
 	char text[12];
 
-	static bool recorded = false;
-	if (show == 1 || show == 7)// back at the menu, or a new game
-		recorded = false;
-	if (show == 7)
-		lastRank = -1;// until then the list keeps showing where the last score landed
-	if (show == 8 && !recorded)// the dragon has fallen
+	if (show == 8 && !scoreAsked)// the dragon has fallen
 	{
-		recorded = true;
+		scoreAsked = true;
 		if (scoreRank(gamePoint) >= 0)
 			show = 10;// ask for a name before the game-over screen
 	}
@@ -321,6 +326,48 @@ void hudRankLine()
 	char line[64];
 	snprintf(line, sizeof line, "Saved as %s   Rank %d", playerName, lastRank + 1);
 	iFontDrawCentered(fontS, 360, 116, line, 0.96f, 0.8f, 0.45f);
+}
+
+
+// Two buttons along the bottom of the game-over and level-complete screens.
+// The same rectangles are used for drawing and for clicks.
+const int BUTTON_LEFT[4] = {150, 40, 350, 92};  // x0, y0, x1, y1
+const int BUTTON_RIGHT[4] = {370, 40, 570, 92};
+
+bool inButton(const int *b, int x, int y)
+{
+	return x >= b[0] && x <= b[2] && y >= b[1] && y <= b[3];
+}
+
+static void hudButton(const int *b, const char *label, const char *key)
+{
+	bool hover = inButton(b, mouse_x, mouse_y);
+	const float fill[4] = {0.12f, 0.07f, 0.04f, hover ? 0.95f : 0.8f};
+	rectGrad(b[0], b[1], b[2], b[3], fill, fill);
+	glColor4f(hover ? 1.0f : 0.85f, hover ? 0.85f : 0.65f, hover ? 0.45f : 0.3f, 1);
+	glLineWidth(hover ? 3.0f : 2.0f);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(b[0], b[1]); glVertex2f(b[2], b[1]); glVertex2f(b[2], b[3]); glVertex2f(b[0], b[3]);
+	glEnd();
+	glColor4f(1, 1, 1, 1);
+	float cx = (b[0] + b[2]) / 2.0f;
+	iFontDrawCentered(fontM, cx, b[1] + 25, label, 1.0f, 0.93f, 0.7f);
+	iFontDrawCentered(fontS, cx, b[1] + 6, key, 0.8f, 0.65f, 0.4f);
+}
+
+// Game over: play again or go to the menu.
+void hudGameOverButtons()
+{
+	hudButton(BUTTON_LEFT, "PLAY AGAIN", "Enter");
+	hudButton(BUTTON_RIGHT, "MENU", "Q");
+	iShowImage(mouse_x - 25, mouse_y - 25, 50, 50, cursor);
+}
+
+// Level one done: on to level two, or the menu.
+void hudLevelDoneButtons()
+{
+	hudButton(BUTTON_LEFT, "NEXT LEVEL", "N");
+	hudButton(BUTTON_RIGHT, "MENU", "Q");
 }
 
 #endif

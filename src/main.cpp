@@ -134,6 +134,7 @@ void iDraw()
 		iSetColor(255, 255, 255);
 		hudResultLine("Your Score is :", gameScore);
 		hudRankLine();
+		hudGameOverButtons();
 	}
 	if (show == 10)//a score for the list: ask for a name
 		hudNameEntry();
@@ -143,7 +144,7 @@ void iDraw()
 		iShowImage(0, -20, width, height+20, flc);
 		iSetColor(255, 255, 255);
 		hudResultLine("Your Score is :", gameScore);
-		//iText(250, 50, "Press 'q' to return to menu.", GLUT_BITMAP_TIMES_ROMAN_24);
+		hudLevelDoneButtons();
 		iShowImage(10, 450, 40, 40, backbutton);
 		iShowImage(mouse_x-25, mouse_y-25, 50, 50, cursor);
 		
@@ -283,6 +284,24 @@ void iPassiveMouse(int mx, int my)
 }
 
 
+void startNewGame()/*everything back to the start, including the zombies of level 2*/
+{
+	newInitialise();
+	hudNewGame();
+	for (int i = 0; i < 5; i++)
+	{
+		zombie[i].life = 10;
+		zombie[i].y = zombiePosition;
+		zombie[i].zomShow = true;
+	}
+}
+
+void goToLevelTwo()
+{
+	show = 3;
+	gamePoints = true;
+}
+
 void iMouse(int button, int state, int mx, int my)
 {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -296,7 +315,7 @@ void iMouse(int button, int state, int mx, int my)
 	
 		if (mx >= 550 && mx <= 630 && my >= 400 && my <= 460 && show == 1)//from menu to play
 		{
-			newInitialise();/*Starts the game from the very beginning*/
+			startNewGame();/*Starts the game from the very beginning*/
 			show = 7;
 			/******************Playing Musics*******************/
 			audioPlayLoop("opening.mp3");
@@ -341,6 +360,24 @@ void iMouse(int button, int state, int mx, int my)
 		{
 			show = 1;
 		}
+		if (show == 8)//game over: play again, or the menu
+		{
+			if (inButton(BUTTON_LEFT, mx, my))
+			{
+				startNewGame();
+				show = 2;
+				resumeGame();
+			}
+			if (inButton(BUTTON_RIGHT, mx, my))
+				show = 1;
+		}
+		if (show == 9)//level one done: next level, or the menu
+		{
+			if (inButton(BUTTON_LEFT, mx, my))
+				goToLevelTwo();
+			else if (inButton(BUTTON_RIGHT, mx, my))
+				show = 1;
+		}
 	
 	}
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
@@ -365,6 +402,11 @@ void iKeyboard(unsigned char key)
 	if (key == '\r')//starting game with enter
 	{   
 		if (show == 7){
+			show = 2;
+			resumeGame();
+		}
+		if (show == 8){//play again
+			startNewGame();
 			show = 2;
 			resumeGame();
 		}
@@ -410,10 +452,7 @@ void iKeyboard(unsigned char key)
 	}
 	if (key == 'n'){//next level
 		if (show == 9)
-		{
-			show = 3;
-			gamePoints = true;
-		}
+			goToLevelTwo();
 	}
 }
 // dx > 0 moves right, dx < 0 left; the unfired shots ride along with the dragon.
